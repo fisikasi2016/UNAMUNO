@@ -1,0 +1,13 @@
+export type Role = 'coach' | 'coordinator';
+export type AttendanceStatus = '' | 'present' | 'absent' | 'injured';
+export type ChangeStatus = 'sin_leer' | 'leida' | 'aceptada' | 'denegada';
+export type EventType = 'training' | 'match';
+export type ResourceKind = 'clinic'|'task'|'mobility'|'activation'|'injury_prevention'|'injury_video'|'pdf'|'unamuno_tactic';
+export type Team = { id:string; name:string; category:string; color:string };
+export type Player = { id:string; teamId:string; name:string; category:string; notes:{id:string; text:string; createdAt:string; showDate:boolean}[] };
+export type TeamEvent = { id:string; teamId:string; type:EventType; date:string; start:string; end?:string; venue:string; opponent?:string; home?:boolean };
+export type Attendance = { playerId:string; eventId:string; status:AttendanceStatus };
+export type Resource = { id:string; kind:ResourceKind; title:string; description:string; tags:string[]; url?:string; pdfPath?:string; authorTeamId:string; createdAt:string };
+export type NewsPost = { id:string; title:string; body:string; mediaUrl?:string; pdfPath?:string; authorTeamId:string; createdAt:string };
+export type ChangeRequest = { id:string; type:EventType; teamId:string; previous:string; requested:string; reason:string; status:ChangeStatus; createdAt:string };
+export type Notification = { id:string; title:string; body:string; targetRole?:Role; targetTeamId?:string; read:boolean; createdAt:string };

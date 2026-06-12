@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Variables privadas
+.env
+.env.local
+.env.production
+
+# Builds
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# VS Code opcional
+.vscode/*
+!.vscode/extensions.json

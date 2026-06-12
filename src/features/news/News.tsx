@@ -1,0 +1,2 @@
+import { news } from '../../lib/mockData';
+export function News({session}:{session:{role:string;teamId:string}}){return <section><div className="section-head"><h2>Berriak</h2><button>+ Sarrera berria</button></div><div className="blog-list">{news.map(n=><article className="blog-card" key={n.id}><h3>{n.title}</h3><small>{n.createdAt} · {n.authorTeamId}</small><p>{n.body}</p>{(session.role==='coordinator'||session.teamId===n.authorTeamId)&&<button className="danger">Ezabatu</button>}</article>)}</div></section>}

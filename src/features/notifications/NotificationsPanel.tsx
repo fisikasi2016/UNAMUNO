@@ -1,0 +1,2 @@
+import { notifications } from '../../lib/mockData';
+export function NotificationsPanel({role,teamId}:{role:string;teamId:string}){const list=notifications.filter(n=>(!n.targetRole||n.targetRole===role)&&(!n.targetTeamId||n.targetTeamId===teamId)); return <aside className="notifications"><h2>Jakinarazpenak</h2>{list.map(n=><article key={n.id}><strong>{n.title}</strong><p>{n.body}</p><small>{n.createdAt}</small></article>)}</aside>}
