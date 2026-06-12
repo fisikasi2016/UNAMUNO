@@ -65,7 +65,7 @@ export function Matches({ session }: { session: any }) {
       { data: venueData, error: venueError },
       { data: matchData, error: matchError },
     ] = await Promise.all([
-      supabase.from('teams').select('id,name').order('name'),
+      supabase.from('teams').select('id,name,color').order('name'),
       supabase.from('venues').select('id,name').order('name'),
       supabase
         .from('weekend_matches')
@@ -107,7 +107,7 @@ export function Matches({ session }: { session: any }) {
     });
 
         setVenues(orderedVenues);
-    setMatches((matchData ?? []) as WeekendMatch[]);
+    setMatches((matchData ?? []) as unknown as WeekendMatch[]);
 
     if (!selectedVenueId && loadedVenues.length > 0) {
       setSelectedVenueId(loadedVenues[0].id);

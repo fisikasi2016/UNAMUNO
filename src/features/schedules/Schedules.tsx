@@ -141,7 +141,7 @@ export function Schedules({ session }: { session: { role: string } }) {
 
     setTeams(teamData ?? []);
     setVenues(loadedVenues);
-    setSchedules((scheduleData ?? []) as TrainingSchedule[]);
+    setSchedules((scheduleData ?? []) as unknown as TrainingSchedule[]);
 
     if (!selectedVenueId && loadedVenues.length > 0) {
       setSelectedVenueId(loadedVenues[0].id);

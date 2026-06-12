@@ -86,7 +86,7 @@ export function App() {
     setSession({
       role: data.role as Role,
       teamId: data.team_id,
-      teamName: data.teams?.name ?? 'Unamuno',
+      teamName: data.teams?.[0]?.name ?? 'Unamuno',
     });
 
     setLoadingSession(false);
