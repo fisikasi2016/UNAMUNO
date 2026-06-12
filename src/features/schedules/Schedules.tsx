@@ -506,28 +506,48 @@ export function Schedules({ session }: { session: { role: string } }) {
     );
     }
 
-    function getOverlapLevel(
-    schedule: TrainingSchedule,
-    daySchedules: TrainingSchedule[]
-    ) {
-    const sorted = [...daySchedules].sort((a, b) =>
-        a.start_time.localeCompare(b.start_time)
-    );
+    function buildDayLayout(daySchedules: TrainingSchedule[]) {
+      const sorted = [...daySchedules].sort((a, b) => {
+        const byStart = a.start_time.localeCompare(b.start_time);
+        if (byStart !== 0) return byStart;
 
-    return sorted.findIndex((item) => item.id === schedule.id);
+        return a.end_time.localeCompare(b.end_time);
+      });
+
+      const columns: TrainingSchedule[][] = [];
+      const layout = new Map<string, number>();
+
+      sorted.forEach((schedule) => {
+        let placed = false;
+
+        for (let columnIndex = 0; columnIndex < columns.length; columnIndex++) {
+          const column = columns[columnIndex];
+
+          const overlapsWithColumn = column.some((existing) =>
+            schedulesOverlap(schedule, existing)
+          );
+
+          if (!overlapsWithColumn) {
+            column.push(schedule);
+            layout.set(schedule.id, columnIndex);
+            placed = true;
+            break;
+          }
+        }
+
+        if (!placed) {
+          columns.push([schedule]);
+          layout.set(schedule.id, columns.length - 1);
+        }
+      });
+
+      return {
+        columns: columns.length || 1,
+        layout,
+      };
     }
 
-    function getMaxOverlap(daySchedules: TrainingSchedule[]) {
-    if (daySchedules.length === 0) return 1;
 
-    return Math.max(
-        1,
-        ...daySchedules.map(
-        (schedule) =>
-            daySchedules.filter((item) => schedulesOverlap(schedule, item)).length
-        )
-    );
-    }
 
     function getDayColumnCount(daySchedules: TrainingSchedule[]) {
       if (daySchedules.length === 0) return 1;
@@ -583,24 +603,27 @@ export function Schedules({ session }: { session: { role: string } }) {
       ) : (
         <div className="schedule-scroll">
           <div className="schedule-week">
-            {weekDates.map((date, index) => (
-            <div
-                className="schedule-day"
-                key={date}
-                style={{
-                minWidth: `${230 * getDayColumnCount(schedulesForDate(date))}px`,
-                }}
-            >
+            {weekDates.map((date, index) => {
+              const daySchedules = schedulesForDate(date);
+              const dayLayout = buildDayLayout(daySchedules);
+
+              return (
+                <div
+                  className="schedule-day"
+                  key={date}
+                  style={{
+                    minWidth: `${230 * dayLayout.columns}px`,
+                  }}
+                >
                 <h3>
                   {weekdays[index]}
                   <small> {formatDate(date)}</small>
                 </h3>
 
-                {schedulesForDate(date).map((schedule) => {
-                const daySchedules = schedulesForDate(date);
-                const column = getOverlapLevel(schedule, daySchedules);
+                {daySchedules.map((schedule) => {
+                  const column = dayLayout.layout.get(schedule.id) ?? 0;
 
-                return (
+                  return (
                     <article
                     className="schedule-card"
                     key={schedule.id}
@@ -622,8 +645,9 @@ export function Schedules({ session }: { session: { role: string } }) {
                     </article>
                 );
                 })}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
