@@ -963,3 +963,191 @@
 .blog-pdf-card button{
   width:auto;
 }
+
+.request-list {
+  display: grid;
+  gap: 14px;
+}
+
+.request-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 22px;
+  padding: 16px;
+  background: #f8fafc;
+}
+
+.request-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.request-head h3 {
+  margin: 4px 0;
+}
+
+.change-status {
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.change-status.sin_leer {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.change-status.leida {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.change-status.aceptada {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.change-status.denegada {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.request-actions button {
+  width: auto;
+  margin: 0;
+}
+
+.change-current-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 700px) {
+  .change-current-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.password-list {
+  display: grid;
+  gap: 14px;
+}
+
+.password-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 22px;
+  padding: 16px;
+  background: #f8fafc;
+  display: grid;
+  gap: 12px;
+}
+
+.password-card h3 {
+  margin: 0;
+}
+
+.password-card label {
+  display: grid;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.password-card input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+}
+
+.home-page {
+  display: grid;
+  gap: 22px;
+}
+
+.home-hero {
+  border-radius: 26px;
+  padding: 24px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+}
+
+.home-hero h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.home-hero p {
+  margin: 8px 0 0;
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.coach-list {
+  border: 1px solid #dbe3ef;
+  border-radius: 22px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.coach-list h3 {
+  margin: 0 0 12px;
+}
+
+.coach-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: white;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.home-grid button {
+  min-height: 126px;
+  padding: 18px;
+  border-radius: 22px;
+  background: white;
+  color: #0f172a;
+  border: 1px solid #dbe3ef;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  text-align: left;
+
+  display: grid;
+  gap: 6px;
+}
+
+.home-grid button span {
+  font-size: 1.8rem;
+}
+
+.home-grid button strong {
+  font-size: 1rem;
+}
+
+.home-grid button small {
+  color: #64748b;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}

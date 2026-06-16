@@ -37,6 +37,8 @@ export function News({ session }: { session: Session }) {
   const [videoUrlsText, setVideoUrlsText] = useState('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [authorName, setAuthorName] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const isCoordinator = session.role === 'coordinator';
 
@@ -99,6 +101,7 @@ export function News({ session }: { session: Session }) {
     setVideoUrlsText('');
     setPdfFile(null);
     setImageFiles([]);
+    setAuthorName('');
   }
 
   function openCreateForm() {
@@ -125,6 +128,7 @@ export function News({ session }: { session: Session }) {
     setPdfFile(null);
     setImageFiles([]);
     setShowForm(true);
+    setAuthorName(post.author_name ?? '');
   }
 
   function closeForm() {
@@ -177,28 +181,35 @@ export function News({ session }: { session: Session }) {
   }
 
   async function savePost() {
-    if (!supabase) return;
+    if (!supabase || saving) return;
+
+    if (!authorName.trim()) {
+      alert('Egilea beharrezkoa da.');
+      return;
+    }
 
     if (!title.trim()) {
       alert('Izenburua beharrezkoa da.');
       return;
     }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      alert('Saioa ez da aurkitu.');
-      return;
-    }
-
-    const parsedVideoUrls = parseVideoUrls(videoUrlsText);
-
-    let uploadedPdfUrl = editingPost?.pdf_url ?? null;
-    let uploadedImageUrls = editingPost ? getPostImageUrls(editingPost) : [];
+    setSaving(true);
 
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        alert('Saioa ez da aurkitu.');
+        return;
+      }
+
+      const parsedVideoUrls = parseVideoUrls(videoUrlsText);
+
+      let uploadedPdfUrl = editingPost?.pdf_url ?? null;
+      let uploadedImageUrls = editingPost ? getPostImageUrls(editingPost) : [];
+
       if (pdfFile) {
         uploadedPdfUrl = await uploadFile(pdfFile, user.id, 'pdfs');
       }
@@ -211,48 +222,52 @@ export function News({ session }: { session: Session }) {
           uploadedImageUrls.push(imageUrl);
         }
       }
+
+      const firstVideo = parsedVideoUrls[0] ?? null;
+      const firstImage = uploadedImageUrls[0] ?? null;
+
+      const payload = {
+        title: title.trim(),
+        body: body.trim() || null,
+
+        video_url: firstVideo,
+        video_urls: parsedVideoUrls,
+
+        pdf_url: uploadedPdfUrl,
+
+        image_url: firstImage,
+        image_urls: uploadedImageUrls,
+
+        media_url: firstVideo || firstImage || uploadedPdfUrl,
+        storage_path: uploadedPdfUrl,
+      };
+
+      const { error } = editingPost
+        ? await supabase
+            .from('news_posts')
+            .update(payload)
+            .eq('id', editingPost.id)
+        : await supabase.from('news_posts').insert({
+            ...payload,
+            owner_id: user.id,
+            author_profile_id: user.id,
+            author_name: authorName.trim(),
+          });
+
+      if (error) {
+        alert(error.message);
+        console.error(error);
+        return;
+      }
+
+      closeForm();
+      await loadPosts();
     } catch (error: any) {
-      alert(error.message ?? 'Fitxategia igotzean errorea.');
+      alert(error.message ?? 'Errorea berria gordetzean.');
       console.error(error);
-      return;
+    } finally {
+      setSaving(false);
     }
-
-    const firstVideo = parsedVideoUrls[0] ?? null;
-    const firstImage = uploadedImageUrls[0] ?? null;
-
-    const payload = {
-      title: title.trim(),
-      body: body.trim() || null,
-
-      video_url: firstVideo,
-      video_urls: parsedVideoUrls,
-
-      pdf_url: uploadedPdfUrl,
-
-      image_url: firstImage,
-      image_urls: uploadedImageUrls,
-
-      media_url: firstVideo || firstImage || uploadedPdfUrl,
-      storage_path: uploadedPdfUrl,
-    };
-
-    const { error } = editingPost
-      ? await supabase.from('news_posts').update(payload).eq('id', editingPost.id)
-      : await supabase.from('news_posts').insert({
-          ...payload,
-          owner_id: user.id,
-          author_profile_id: user.id,
-          author_name: user.email ?? 'Erabiltzailea',
-        });
-
-    if (error) {
-      alert(error.message);
-      console.error(error);
-      return;
-    }
-
-    closeForm();
-    await loadPosts();
   }
 
   async function deletePost(post: NewsPost) {
@@ -471,6 +486,16 @@ export function News({ session }: { session: Session }) {
           <div className="modal-card">
             <h3>{editingPost ? 'Sarrera editatu' : 'Sarrera berria'}</h3>
 
+
+            <label>
+              Egilea
+              <input
+                value={authorName}
+                onChange={(event) => setAuthorName(event.target.value)}
+                placeholder="Adib. Ibon, Infantil Femenino A..."
+              />
+            </label>
+
             <label>
               Izenburua
               <input
@@ -553,8 +578,12 @@ https://youtube.com/...`}
                 Utzi
               </button>
 
-              <button type="button" onClick={savePost}>
-                {editingPost ? 'Gorde aldaketak' : 'Argitaratu'}
+              <button type="button" onClick={savePost} disabled={saving}>
+                {saving
+                  ? 'Argitaratzen...'
+                  : editingPost
+                  ? 'Gorde aldaketak'
+                  : 'Argitaratu'}
               </button>
             </div>
           </div>

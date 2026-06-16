@@ -1,11 +1,13 @@
 import {
   Bell,
+  KeyRound,
   CalendarDays,
   Dumbbell,
   Newspaper,
   Repeat,
   Trophy,
   Users,
+  House,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -17,11 +19,21 @@ import { NotificationsPanel } from '../features/notifications/NotificationsPanel
 import { Resources } from '../features/resources/Resources';
 import { Schedules } from '../features/schedules/Schedules';
 import { TeamDashboard } from '../features/team/TeamDashboard';
+import { Passwords } from '../features/passwords/Passwords';
 import { t } from '../config/i18n';
 import { supabase } from '../lib/supabase';
 import { Role } from '../types/domain';
+import { Home } from '../features/home/Home';
 
-type Page = 'team' | 'matches' | 'schedules' | 'resources' | 'news' | 'changes';
+type Page =
+  | 'home'
+  | 'team'
+  | 'matches'
+  | 'schedules'
+  | 'resources'
+  | 'news'
+  | 'changes'
+  | 'passwords';
 
 type AppSession = {
   role: Role;
@@ -34,7 +46,7 @@ const labels = t.eu;
 export function App() {
   const [session, setSession] = useState<AppSession | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
-  const [page, setPage] = useState<Page>('team');
+  const [page, setPage] = useState<Page>('home');
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   async function logout() {
@@ -124,14 +136,21 @@ export function App() {
     return <AuthScreen onLogin={loadSession} />;
   }
 
-  const items = [
+  type NavItem = [Page, string, typeof Users];
+
+  const items: NavItem[] = [
+    ['home', 'Hasiera', House],
     ['team', session.role === 'coordinator' ? labels.coordinatorTeam : labels.team, Users],
     ['matches', labels.weekend, Trophy],
     ['schedules', labels.schedules, CalendarDays],
     ['resources', labels.resources, Dumbbell],
     ['news', labels.news, Newspaper],
     ['changes', labels.changes, Repeat],
-  ] as const;
+  ];
+
+  if (session.role === 'coordinator') {
+    items.push(['passwords', 'Pasahitzak', KeyRound]);
+  }
 
   return (
     <div className="app-shell">
@@ -172,12 +191,16 @@ export function App() {
       )}
 
       <main className="content-card">
+        {page === 'home' && (
+          <Home session={session} goTo={setPage} />
+        )}
         {page === 'team' && <TeamDashboard session={session} />}
         {page === 'matches' && <Matches session={session} />}
         {page === 'schedules' && <Schedules session={session} />}
         {page === 'resources' && <Resources session={session} />}
         {page === 'news' && <News session={session} />}
         {page === 'changes' && <ChangeRequests session={session} />}
+        {page === 'passwords' && <Passwords />}
       </main>
 
       <nav className="bottom-nav">
