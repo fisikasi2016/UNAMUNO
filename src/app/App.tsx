@@ -24,6 +24,7 @@ import { t } from '../config/i18n';
 import { supabase } from '../lib/supabase';
 import { Role } from '../types/domain';
 import { Home } from '../features/home/Home';
+import { TeamsCoaches } from '../features/teamcoaches/TeamsCoaches';
 
 type Page =
   | 'home'
@@ -33,7 +34,8 @@ type Page =
   | 'resources'
   | 'news'
   | 'changes'
-  | 'passwords';
+  | 'passwords'
+  | 'teams-coaches';
 
 type AppSession = {
   role: Role;
@@ -87,6 +89,7 @@ export function App() {
       )
       .eq('id', authSession.user.id)
       .single();
+    
 
     if (error || !data) {
       console.error('Profile load error:', error);
@@ -98,7 +101,7 @@ export function App() {
     setSession({
       role: data.role as Role,
       teamId: data.team_id,
-      teamName: data.teams?.[0]?.name ?? 'Unamuno',
+      teamName: data.teams?.name ?? 'Unamuno',
     });
 
     setLoadingSession(false);
@@ -140,13 +143,20 @@ export function App() {
 
   const items: NavItem[] = [
     ['home', 'Hasiera', House],
+  ];
+
+  if (session.role === 'coordinator') {
+    items.push(['teams-coaches', 'Taldeak', Users]);
+  }
+
+  items.push(
     ['team', session.role === 'coordinator' ? labels.coordinatorTeam : labels.team, Users],
-    ['matches', labels.weekend, Trophy],
     ['schedules', labels.schedules, CalendarDays],
+    ['matches', labels.weekend, Trophy],
     ['resources', labels.resources, Dumbbell],
     ['news', labels.news, Newspaper],
-    ['changes', labels.changes, Repeat],
-  ];
+    ['changes', labels.changes, Repeat]
+  );
 
   if (session.role === 'coordinator') {
     items.push(['passwords', 'Pasahitzak', KeyRound]);
@@ -200,6 +210,7 @@ export function App() {
         {page === 'resources' && <Resources session={session} />}
         {page === 'news' && <News session={session} />}
         {page === 'changes' && <ChangeRequests session={session} />}
+        {page === 'teams-coaches' && <TeamsCoaches />}
         {page === 'passwords' && <Passwords />}
       </main>
 

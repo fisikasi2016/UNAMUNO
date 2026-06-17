@@ -40,14 +40,17 @@ export function Home({ session, goTo }: Props) {
       </div>
 
       <div className="coach-list">
-        <h3>Entrenatzaileak</h3>
 
-        {coaches.map((coach, index) => (
-          <div key={index} className="coach-item">
-            {coach.display_name}
-          </div>
-        ))}
-      </div>
+        <div className="home-coaches-section">
+            <p className="home-team-label">Entrenatzaileak</p>
+
+            {coaches.map((coach, index) => (
+            <div key={index} className="coach-item">
+                {coach.display_name}
+            </div>
+            ))}
+        </div>
+        </div>
 
       <div className="home-grid">
         <button onClick={() => goTo('team')}>
@@ -86,6 +89,15 @@ export function Home({ session, goTo }: Props) {
             <small>Ordutegi eta partida aldaketak</small>
         </button>
 
+        
+        {session.role === 'coordinator' && (
+        <button onClick={() => goTo('teams-coaches')}>
+            <span>🏀</span>
+            <strong>Taldeak eta entrenatzaileak</strong>
+            <small>Taldeak sortu eta entrenatzaileak esleitu</small>
+        </button>
+        )}
+
         {session.role === 'coordinator' && (
         <button onClick={() => goTo('passwords')}>
             <span>🔑</span>
@@ -93,6 +105,8 @@ export function Home({ session, goTo }: Props) {
             <small>Erabiltzaileen pasahitzak kudeatu</small>
         </button>
         )}
+
+        
         </div>
 
     </section>

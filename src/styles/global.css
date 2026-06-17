@@ -1165,3 +1165,333 @@
     margin-bottom: 170px;
   }
 }
+
+.teams-coaches-page {
+  display: grid;
+  gap: 20px;
+}
+
+.team-card,
+.coach-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 18px;
+  padding: 14px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teams-block,
+.coordinators-block{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.modern-team-card{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+.team-header h4{
+  margin:0;
+  font-size:1.1rem;
+}
+
+.team-coaches{
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.team-coach{
+  color:#475569;
+}
+
+.team-actions{
+  margin-top:16px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.team-actions button{
+  width:auto;
+  padding:.65rem 1rem;
+}
+
+.coordinator-card{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+@media (max-width:700px){
+
+  .coordinator-card{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .team-actions{
+    width:100%;
+  }
+
+  .team-actions button{
+    flex:1;
+  }
+}
+
+.coordinators-block {
+  display: grid;
+  gap: 12px;
+}
+
+.block-title-row h3 {
+  margin: 0;
+}
+
+.coordinators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.coordinator-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 20px;
+  padding: 14px;
+  background: white;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.coordinator-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #fff7ed;
+  color: #f97316;
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.coordinator-info {
+  display: grid;
+  gap: 2px;
+}
+
+.coordinator-info strong {
+  font-size: 1rem;
+}
+
+.coordinator-info small {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.coordinator-card button {
+  width: auto;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .coordinator-card {
+    grid-template-columns: 46px 1fr;
+  }
+
+  .coordinator-card button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+.team-coach-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.mini-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mini-actions button {
+  width: auto;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.unassigned-coaches-block {
+  display: grid;
+  gap: 12px;
+}
+
+.team-coaches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.team-coach-pill {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.team-coach-pill .coach-name {
+  color: #334155;
+  font-weight: 800;
+}
+
+.team-coach-pill button {
+  width: auto;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.team-coach-pill .mini-edit {
+  background: #e5e7eb;
+  color: #0f172a;
+}
+
+.team-coach-pill .mini-remove {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 700px) {
+  .team-coach-pill {
+    grid-template-columns: 1fr;
+  }
+
+  .team-coach-pill button {
+    width: 100%;
+  }
+}
+
+.home-team-label {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.home-team-name {
+  margin: 0 0 18px;
+  font-size: 1.7rem;
+}
+
+.home-coaches-section {
+  display: grid;
+  gap: 8px;
+}
+
+.modern-team-card {
+  display: grid;
+  grid-template-columns: 180px 1fr 220px;
+  gap: 18px;
+  align-items: center;
+}
+
+.team-header h4 {
+  margin: 0;
+  line-height: 1.15;
+}
+
+.team-coaches {
+  display: grid;
+  gap: 8px;
+}
+
+.team-coach-pill {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.team-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 0;
+}
+
+.team-actions button {
+  width: 100%;
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .modern-team-card {
+    grid-template-columns: 1fr;
+  }
+
+  .team-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.coordinators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.coordinator-card {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.coordinator-info {
+  min-width: 0;
+}
+
+.coordinator-info strong {
+  display: block;
+  white-space: normal;
+  line-height: 1.15;
+}
+
+.coordinator-info small {
+  display: block;
+  margin-top: 3px;
+}
+
+.coordinator-card button {
+  width: auto;
+  white-space: nowrap;
+}
