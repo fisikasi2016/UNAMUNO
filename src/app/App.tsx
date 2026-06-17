@@ -98,10 +98,14 @@ export function App() {
       return;
     }
 
+    const teamRelation = Array.isArray(data.teams)
+      ? data.teams[0]
+      : data.teams;
+
     setSession({
       role: data.role as Role,
       teamId: data.team_id,
-      teamName: data.teams?.name ?? 'Unamuno',
+      teamName: teamRelation?.name ?? 'Unamuno',
     });
 
     setLoadingSession(false);
