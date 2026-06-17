@@ -467,7 +467,7 @@ export function TeamsCoaches() {
         })}
       </div>
 
-      <div className="unassigned-coaches-block">
+      {/* <div className="unassigned-coaches-block">
         <h3>👥 Talderik gabeko entrenatzaileak</h3>
 
         {coaches.filter((coach) => coach.role === 'coach' && !coach.team_id).length === 0 ? (
@@ -490,7 +490,7 @@ export function TeamsCoaches() {
               </article>
             ))
         )}
-      </div>
+      </div> */}
 
 
     {showTeamForm && (
