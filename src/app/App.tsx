@@ -8,6 +8,7 @@ import {
   Trophy,
   Users,
   House,
+  Shirt,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -25,6 +26,7 @@ import { supabase } from '../lib/supabase';
 import { Role } from '../types/domain';
 import { Home } from '../features/home/Home';
 import { TeamsCoaches } from '../features/teamcoaches/TeamsCoaches';
+import { Kits } from '../features/kits/Kits';
 
 type Page =
   | 'home'
@@ -35,6 +37,7 @@ type Page =
   | 'news'
   | 'changes'
   | 'passwords'
+  | 'kits'
   | 'teams-coaches';
 
 type AppSession = {
@@ -159,7 +162,8 @@ export function App() {
     ['matches', labels.weekend, Trophy],
     ['resources', labels.resources, Dumbbell],
     ['news', labels.news, Newspaper],
-    ['changes', labels.changes, Repeat]
+    ['changes', labels.changes, Repeat],
+    ['kits', 'Ekipazioak', Shirt]
   );
 
   if (session.role === 'coordinator') {
@@ -214,6 +218,7 @@ export function App() {
         {page === 'resources' && <Resources session={session} />}
         {page === 'news' && <News session={session} />}
         {page === 'changes' && <ChangeRequests session={session} />}
+        {page === 'kits' && <Kits session={session} />}
         {page === 'teams-coaches' && <TeamsCoaches />}
         {page === 'passwords' && <Passwords />}
       </main>

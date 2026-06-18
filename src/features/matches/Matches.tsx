@@ -357,11 +357,317 @@ export function Matches({ session }: { session: any }) {
     );
     }
 
+  function exportWeekendMatches() {
+    const weekendMatches = matches
+      .filter(
+        (match) =>
+          match.date === weekend.saturday ||
+          match.date === weekend.sunday
+      )
+      .sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.start_time.localeCompare(b.start_time);
+      });
+
+    if (weekendMatches.length === 0) {
+      alert('Asteburu honetan ez dago partidarik esportatzeko.');
+      return;
+    }
+
+    const awayVenueName = 'Partidos fuera de casa';
+
+    const grouped = venues
+      .map((venue) => {
+        const venueMatches = weekendMatches.filter(
+          (match) => match.venue_id === venue.id
+        );
+
+        return {
+          venue,
+          matches: venueMatches,
+        };
+      })
+      .filter((group) => group.matches.length > 0)
+      .sort((a, b) => {
+        const aIsAway = a.venue.name === awayVenueName;
+        const bIsAway = b.venue.name === awayVenueName;
+
+        if (aIsAway && !bIsAway) return 1;
+        if (!aIsAway && bIsAway) return -1;
+
+        return b.matches.length - a.matches.length;
+      });
+
+    const formatDayName = (dateValue: string) =>
+      dateValue === weekend.saturday
+        ? `Larunbata ${formatDate(weekend.saturday)}`
+        : `Igandea ${formatDate(weekend.sunday)}`;
+
+    const renderMatchRow = (match: WeekendMatch) => {
+      const teamName = match.teams?.name ?? 'Taldea';
+      const color = match.teams?.color ?? '#94a3b8';
+      const title = match.home
+        ? `${teamName} - ${match.opponent}`
+        : `${match.opponent} - ${teamName}`;
+
+      return `
+        <div class="match-row">
+          <div class="team-color" style="background:${color}"></div>
+          <div class="match-time">${match.start_time.slice(0, 5)}</div>
+          <div class="match-title">${escapeHtml(title)}</div>
+        </div>
+      `;
+    };
+
+    const venueSections = grouped
+      .map((group) => {
+        const saturday = group.matches
+          .filter((match) => match.date === weekend.saturday)
+          .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+        const sunday = group.matches
+          .filter((match) => match.date === weekend.sunday)
+          .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+        const venueTitle =
+          group.venue.name === awayVenueName
+            ? '🚍 KANPOKO PARTIDAK'
+            : `🏟️ ${escapeHtml(group.venue.name)}`;
+
+        return `
+          <section class="venue-section">
+            <div class="venue-header">
+              <h2>${venueTitle}</h2>
+              <span>${group.matches.length} partida</span>
+            </div>
+
+            ${
+              saturday.length > 0
+                ? `
+                  <h3>${formatDayName(weekend.saturday)}</h3>
+                  ${saturday.map(renderMatchRow).join('')}
+                `
+                : ''
+            }
+
+            ${
+              sunday.length > 0
+                ? `
+                  <h3>${formatDayName(weekend.sunday)}</h3>
+                  ${sunday.map(renderMatchRow).join('')}
+                `
+                : ''
+            }
+          </section>
+        `;
+      })
+      .join('');
+
+    const printableHtml = `
+      <!doctype html>
+      <html lang="eu">
+        <head>
+          <meta charset="utf-8" />
+          <title>Asteburuko partidak</title>
+
+          <style>
+            * {
+              box-sizing: border-box;
+            }
+
+            body {
+              margin: 0;
+              padding: 28px;
+              font-family: Inter, Arial, sans-serif;
+              color: #0f172a;
+              background: #f8fafc;
+            }
+
+            .page {
+              max-width: 900px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 24px;
+              padding: 28px;
+              border: 1px solid #e2e8f0;
+            }
+
+            .main-header {
+              display: flex;
+              justify-content: space-between;
+              gap: 20px;
+              align-items: flex-start;
+              border-bottom: 3px solid #0f172a;
+              padding-bottom: 18px;
+              margin-bottom: 22px;
+            }
+
+            .eyebrow {
+              margin: 0;
+              color: #f97316;
+              font-weight: 900;
+              letter-spacing: .08em;
+              text-transform: uppercase;
+              font-size: 12px;
+            }
+
+            h1 {
+              margin: 4px 0 0;
+              font-size: 32px;
+            }
+
+            .weekend-date {
+              font-weight: 900;
+              color: #475569;
+              text-align: right;
+            }
+
+            .venue-section {
+              break-inside: avoid;
+              border: 1px solid #dbe3ef;
+              border-radius: 18px;
+              padding: 16px;
+              margin-bottom: 18px;
+              background: #ffffff;
+            }
+
+            .venue-header {
+              display: flex;
+              justify-content: space-between;
+              gap: 12px;
+              align-items: center;
+              margin-bottom: 12px;
+            }
+
+            .venue-header h2 {
+              margin: 0;
+              font-size: 20px;
+            }
+
+            .venue-header span {
+              background: #fff7ed;
+              color: #f97316;
+              border-radius: 999px;
+              padding: 7px 11px;
+              font-size: 13px;
+              font-weight: 900;
+            }
+
+            h3 {
+              margin: 16px 0 8px;
+              font-size: 15px;
+              color: #475569;
+              text-transform: uppercase;
+              letter-spacing: .04em;
+            }
+
+            .match-row {
+              display: grid;
+              grid-template-columns: 8px 58px 1fr;
+              gap: 10px;
+              align-items: center;
+              padding: 9px 0;
+              border-bottom: 1px solid #e2e8f0;
+            }
+
+            .match-row:last-child {
+              border-bottom: none;
+            }
+
+            .team-color {
+              width: 8px;
+              height: 32px;
+              border-radius: 999px;
+            }
+
+            .match-time {
+              font-weight: 900;
+            }
+
+            .match-title {
+              font-weight: 800;
+            }
+
+            @media print {
+              body {
+                background: white;
+                padding: 0;
+              }
+
+              .page {
+                border: none;
+                border-radius: 0;
+                padding: 18mm;
+                max-width: none;
+              }
+
+              .venue-section {
+                page-break-inside: avoid;
+              }
+            }
+          </style>
+        </head>
+
+        <body>
+          <main class="page">
+            <header class="main-header">
+              <div>
+                <p class="eyebrow">Unamuno Saskibaloia</p>
+                <h1>Asteburuko partidak</h1>
+              </div>
+
+              <div class="weekend-date">
+                ${formatDate(weekend.saturday)} - ${formatDate(weekend.sunday)}
+              </div>
+            </header>
+
+            ${venueSections}
+          </main>
+
+          <script>
+            window.onload = () => {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+
+    if (!printWindow) {
+      alert('Ezin izan da esportazio leihoa ireki.');
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(printableHtml);
+    printWindow.document.close();
+  }
+
+  function escapeHtml(value: string) {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   return (
     <section>
       <div className="section-head">
         <h2>Asteburuko partidak</h2>
-        <button onClick={openCreateModal}>+ Partida</button>
+
+        <div className="button-row-inline">
+          {session.role === 'coordinator' && (
+            <button type="button" onClick={exportWeekendMatches}>
+              📄 Asteburua esportatu
+            </button>
+          )}
+
+          <button onClick={openCreateModal}>+ Partida</button>
+        </div>
       </div>
 
     <div className="weekend-picker">

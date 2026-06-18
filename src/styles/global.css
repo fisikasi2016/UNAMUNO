@@ -1495,3 +1495,80 @@
   width: auto;
   white-space: nowrap;
 }
+
+.button-row-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.button-row-inline button {
+  width: auto;
+}
+
+.kit-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #dbe3ef;
+  border-radius: 22px;
+  background: white;
+}
+
+.kit-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.kit-table th,
+.kit-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px;
+  text-align: left;
+}
+
+.kit-table th {
+  background: #f8fafc;
+  font-weight: 900;
+}
+
+.kit-table input {
+  width: 100%;
+  max-width: 110px;
+  padding: 12px 14px;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.kit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.jersey-header {
+  width: 72px;
+  text-align: center;
+}
+
+.jersey-cell {
+  width: 72px;
+  text-align: center;
+}
+
+.jersey-input {
+  width: 58px;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #dbe3ef;
+  text-align: center;
+  font-weight: 900;
+}
+
+.jersey-input.blue {
+  background: #eff6ff;
+}
+
+.jersey-input.white {
+  background: #ffffff;
+}

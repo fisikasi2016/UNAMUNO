@@ -19,6 +19,8 @@ type Player = {
   id: string;
   name: string;
   team_id: string;
+  blue_jersey_number: number | null;
+  white_jersey_number: number | null;
 };
 
 type EventItem = {
@@ -167,7 +169,13 @@ export function TeamDashboard({ session }: { session: Session }) {
       await Promise.all([
         supabase
           .from('players')
-          .select('id,name,team_id')
+          .select(`
+            id,
+            name,
+            team_id,
+            blue_jersey_number,
+            white_jersey_number
+          `)
           .eq('team_id', teamId)
           .order('created_at'),
 
@@ -413,6 +421,39 @@ export function TeamDashboard({ session }: { session: Session }) {
     await loadTeamData(selectedTeamId);
     }
 
+    async function updateJerseyNumber(
+      playerId: string,
+      field: 'blue_jersey_number' | 'white_jersey_number',
+      value: string
+    ) {
+      if (!supabase || !canEdit) return;
+
+      const cleanValue = value === '' ? null : Number(value);
+
+      setPlayers((current) =>
+        current.map((player) =>
+          player.id === playerId
+            ? {
+                ...player,
+                [field]: cleanValue,
+              }
+            : player
+        )
+      );
+
+      const { error } = await supabase
+        .from('players')
+        .update({
+          [field]: cleanValue,
+        })
+        .eq('id', playerId);
+
+      if (error) {
+        console.error(error);
+        await loadTeamData(selectedTeamId);
+      }
+    }
+
   async function addNote() {
     if (!supabase || !canEdit || !selectedPlayer) return;
 
@@ -571,6 +612,8 @@ export function TeamDashboard({ session }: { session: Session }) {
             <thead>
               <tr>
                 <th>Jokalaria</th>
+                <th className="jersey-header">🔵</th>
+                <th className="jersey-header">⚪</th>
 
                 {events.map((event) => (
                     <th key={event.id}>
@@ -616,6 +659,46 @@ export function TeamDashboard({ session }: { session: Session }) {
                         </div>
                     )}
                     </th>
+                    
+                    <td className="jersey-cell">
+                      {canEdit ? (
+                        <input
+                          className="jersey-input blue"
+                          type="number"
+                          min="0"
+                          value={player.blue_jersey_number ?? ''}
+                          onChange={(event) =>
+                            updateJerseyNumber(
+                              player.id,
+                              'blue_jersey_number',
+                              event.target.value
+                            )
+                          }
+                        />
+                      ) : (
+                        player.blue_jersey_number ?? ''
+                      )}
+                    </td>
+
+                    <td className="jersey-cell">
+                      {canEdit ? (
+                        <input
+                          className="jersey-input white"
+                          type="number"
+                          min="0"
+                          value={player.white_jersey_number ?? ''}
+                          onChange={(event) =>
+                            updateJerseyNumber(
+                              player.id,
+                              'white_jersey_number',
+                              event.target.value
+                            )
+                          }
+                        />
+                      ) : (
+                        player.white_jersey_number ?? ''
+                      )}
+                    </td>
 
                   {events.map((event) => (
                     <td
@@ -657,7 +740,7 @@ export function TeamDashboard({ session }: { session: Session }) {
 
               {players.length === 0 && (
                 <tr>
-                  <td colSpan={events.length + 1}>
+                  <td colSpan={events.length + 3}>
                     Oraindik ez dago jokalaririk.
                   </td>
                 </tr>
